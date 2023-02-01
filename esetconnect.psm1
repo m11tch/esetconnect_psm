@@ -54,7 +54,7 @@ Function Get-EsetConnectDetections {
     }
 
     Try {
-        $Detections = Invoke-RestMethod -Method Get -Uri 'http://epcpublicapi-test.westeurope.cloudapp.azure.com/v1/detections' -Headers $Headers -Body $Query
+        $Detections = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/detections" -Headers $Headers -Body $Query
     } catch {
         $_.Exception
     }
@@ -70,7 +70,7 @@ Function Get-EsetConnectDeviceTasks {
     }
     
     Try {
-        $DeviceTasks = Invoke-RestMethod -Method Get -Uri 'http://epcpublicapi-test.westeurope.cloudapp.azure.com/v1/device_tasks' -Headers $Headers
+        $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/device_tasks" -Headers $Headers
     } catch {
         $_.Exception
     }
@@ -92,7 +92,7 @@ Function Get-EsetConnectDeviceGroups {
     }
 
     Try {
-        $DeviceGroups = Invoke-RestMethod -Method Get -Uri 'http://epcpublicapi-test.westeurope.cloudapp.azure.com/v1/device_groups' -Headers $Headers
+        $DeviceGroups = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/device_groups" -Headers $Headers
     } catch {
         $_.Exception
     }
