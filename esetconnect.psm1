@@ -28,59 +28,83 @@ Function Invoke-EsetConnectAuthentication {
 }
 
 Function Get-EsetConnectDetections {
+    [CmdletBinding(DefaultParameterSetName="AllDetections")]
     param(
-        [string]$DeviceUuid,
-        [datetime]$StartTime,
-        [datetime]$EndTime,
-        [int]$PageSize,
-        [string]$PageToken
+        [Parameter(ParameterSetName="AllDetections")][string]$DeviceUuid,
+        [Parameter(ParameterSetName="AllDetections")][datetime]$StartTime,
+        [Parameter(ParameterSetName="AllDetections")][datetime]$EndTime,
+        [Parameter(ParameterSetName="AllDetections")][int]$PageSize,
+        [Parameter(ParameterSetName="AllDetections")][string]$PageToken,
+        [Parameter(ParameterSetName="SpecificDetection")][string]$DetectionUuid
     )
     $Headers = @{
         "Content-Type" = "application/json"
         "Accept" = "application/json"
         "access-token" = "$AccessToken"
     }
+    if ($DetectionUuid) {
+        Try {
+            $Detections = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/detections/$DetectionUuid" -Headers $Headers
+        } catch {
+            $_.Exception
+        }
+    
+        return $Detections
+    } else {
+        $Query = @{
+            "device_uuid" = "$DeviceUuid"
+            "page_size" = $PageSize
+            "page_token" = "$PageToken"
+        }
+        if ($StartTime) {
+            $Query["start_time"] = $StartTime
+        }
+        if ($EndTime) {
+            $Query["end_time"] = $EndTime
+        }
+    
+        Try {
+            $Detections = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/detections" -Headers $Headers -Body $Query
+        } catch {
+            $_.Exception
+        }
+    
+        return $Detections.detections
+    }
 
-    $Query = @{
-        "device_uuid" = "$DeviceUuid"
-        "page_size" = $PageSize
-        "page_token" = "$PageToken"
-    }
-    if ($null -ne $StartTime) {
-        $Query["start_time"] = $StartTime
-    }
-    if ($null -ne $EndTime) {
-        $Query["end_time"] = $EndTime
-    }
-
-    Try {
-        $Detections = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/detections" -Headers $Headers -Body $Query
-    } catch {
-        $_.Exception
-    }
-
-    return $Detections.detections
 }
 
 Function Get-EsetConnectDeviceTasks {
+    param(
+        [String]$TaskUuid
+    )
+
     $Headers = @{
         "Content-Type" = "application/json"
         "Accept" = "application/json"
         "access-token" = "$AccessToken"
     }
     
-    Try {
-        $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/device_tasks" -Headers $Headers
-    } catch {
-        $_.Exception
+    if ($TaskUuid) { 
+        Try {
+            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/device_tasks/$TaskUuid" -Headers $Headers
+        } catch {
+            $_.Exception
+        }
+    } else {
+        Try {
+            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/device_tasks" -Headers $Headers
+        } catch {
+            $_.Exception
+        }
     }
+
 
     Return $DeviceTasks
 }
 
 Function Get-EsetConnectDeviceGroups {
     param(
-        [string]$DeviceUuid,
         [int]$PageSize,
         [string]$PageToken
     )
