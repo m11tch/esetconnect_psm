@@ -201,3 +201,24 @@ Function Get-EsetConnectSyslogConfiguration {
     }
     Return $GetSyslogSettingsResponse
 }
+
+Function Invoke-EsetConnectRequest {
+    Param(
+        [ValidateSet("get", "post", "delete", "put")]$Method,
+        [string]$Endpoint,
+        [string]$Body
+    )
+
+    $Headers = @{
+        "Content-Type" = "application/json"
+        "Accept" = "application/json"
+        "access-token" = "$AccessToken"
+    }
+
+    try {
+        Invoke-RestMethod -Method $Method -Uri "https://$BaseUri/$Endpoint" -Headers $Headers -Body $Body
+    } catch {
+        $_.Exception
+    }
+   
+}
