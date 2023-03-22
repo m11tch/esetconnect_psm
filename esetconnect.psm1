@@ -6,18 +6,17 @@ Function Invoke-EsetConnectAuthentication {
     )
 
     $Headers = @{
-        "Content-Type" = "application/json"
         "Accept" = "application/json"
     }
 
-    $Body = @"
-{
-    "username": "$Username",
-    "password": "$Password"
-}
+    $Body = @{
+        "grant_type"    = "client_credentials"
+        "client_id":    = "$Username"
+        "client_secret" = "$Password"
+    }
 "@
     try {
-        $JWT = Invoke-RestMethod -Method Post -Uri "https://$BaseUri/v1/auth:authenticate" -Headers $Headers -Body $Body
+        $JWT = Invoke-RestMethod -Method Post -Uri "https://$BaseUri/oauth/token" -Headers $Headers -Body $Body
     } catch {
         $_.Exception.Response.Headers
     }
@@ -40,8 +39,9 @@ Function Get-EsetConnectDetections {
     $Headers = @{
         "Content-Type" = "application/json"
         "Accept" = "application/json"
-        "access-token" = "$AccessToken"
+        "Authorization" = "bearer $AccessToken"
     }
+
     if ($DetectionUuid) {
         Try {
             $Detections = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/detections/$DetectionUuid" -Headers $Headers
@@ -82,7 +82,7 @@ Function Get-EsetConnectDeviceTasks {
     $Headers = @{
         "Content-Type" = "application/json"
         "Accept" = "application/json"
-        "access-token" = "$AccessToken"
+        "Authorization" = "bearer $AccessToken"
     }
     
     if ($TaskUuid) { 
@@ -112,7 +112,7 @@ Function Get-EsetConnectDeviceGroups {
     $Headers = @{
         "Content-Type" = "application/json"
         "Accept" = "application/json"
-        "access-token" = "$AccessToken"
+        "Authorization" = "bearer $AccessToken"
     }
 
     Try {
@@ -172,7 +172,7 @@ Function Set-EsetConnectSyslogConfiguration {
     $Headers = @{
         "Content-Type" = "application/json"
         "Accept" = "application/json"
-        "access-token" = "$AccessToken"
+        "Authorization" = "bearer $AccessToken"
     }
     
     $Data = @{
@@ -191,7 +191,7 @@ Function Get-EsetConnectSyslogConfiguration {
     $Headers = @{
         "Content-Type" = "application/json"
         "Accept" = "application/json"
-        "access-token" = "$AccessToken"
+        "Authorization" = "bearer $AccessToken"
     }
 
     Try {
@@ -212,7 +212,7 @@ Function Invoke-EsetConnectRequest {
     $Headers = @{
         "Content-Type" = "application/json"
         "Accept" = "application/json"
-        "access-token" = "$AccessToken"
+        "Authorization" = "bearer $AccessToken"
     }
 
     try {
