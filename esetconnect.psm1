@@ -14,15 +14,15 @@ Function Invoke-EsetConnectAuthentication {
         "client_id":    = "$Username"
         "client_secret" = "$Password"
     }
-"@
+
     try {
-        $JWT = Invoke-RestMethod -Method Post -Uri "https://$BaseUri/oauth/token" -Headers $Headers -Body $Body
+        $AuthResponse = Invoke-RestMethod -Method Post -Uri "https://$BaseUri/oauth/token" -Headers $Headers -Body $Body
     } catch {
         $_.Exception.Response.Headers
     }
 
-    Write-Debug($JWT)
-    Set-Variable -Scope Script -Name AccessToken -Value $JWT.access_token
+    Write-Debug($AuthResponse)
+    Set-Variable -Scope Script -Name AccessToken -Value $AuthResponse.access_token
     Set-Variable -Scope Script -Name BaseUri -Value $BaseUri
 }
 
