@@ -1,4 +1,5 @@
 Function Invoke-EsetConnectAuthentication {
+    [CmdletBinding()]
     param(
         $Username,
         $Password,
@@ -11,19 +12,18 @@ Function Invoke-EsetConnectAuthentication {
 
     $Body = @{
         "grant_type"    = "client_credentials"
-        "client_id":    = "$Username"
+        "client_id"     = "$Username"
         "client_secret" = "$Password"
     }
 
     try {
-        $AuthResponse = Invoke-RestMethod -Method Post -Uri "https://$BaseUri/oauth/token" -Headers $Headers -Body $Body
+        $JWT = Invoke-RestMethod -Method Post -Uri "https://$BaseUri/oauth/token" -Headers $Headers -Body $Body
     } catch {
         $_.Exception.Response.Headers
     }
 
-    Write-Debug($AuthResponse)
-    Set-Variable -Scope Script -Name AccessToken -Value $AuthResponse.access_token
-    Set-Variable -Scope Script -Name BaseUri -Value $BaseUri
+    Write-Debug($JWT)
+    Set-Variable -Scope Script -Name AccessToken -Value $JWT.access_token
 }
 
 Function Get-EsetConnectDetections {
@@ -44,7 +44,7 @@ Function Get-EsetConnectDetections {
 
     if ($DetectionUuid) {
         Try {
-            $Detections = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/detections/$DetectionUuid" -Headers $Headers
+            $Detections = Invoke-EsetConnectRequest -Method Get -BaseUri $BaseUri -Endpoint "/v1/detections/$DetectionUuid" -Headers $Headers
         } catch {
             $_.Exception
         }
@@ -64,11 +64,11 @@ Function Get-EsetConnectDetections {
         }
     
         Try {
-            $Detections = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/detections" -Headers $Headers -Body $Query
+            $Detections = Invoke-EsetConnectRequest -Method Get -BaseUri "incident-management.eset.systems" -Endpoint "v1/detections" -Body $Query -Headers $Headers
         } catch {
             $_.Exception
         }
-    
+        Write-Debug $Detections
         return $Detections.detections
     }
 
@@ -87,13 +87,13 @@ Function Get-EsetConnectDeviceTasks {
     
     if ($TaskUuid) { 
         Try {
-            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/device_tasks/$TaskUuid" -Headers $Headers
+            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://automation.eset.systems/v1/device_tasks/$TaskUuid" -Headers $Headers
         } catch {
             $_.Exception
         }
     } else {
         Try {
-            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/device_tasks" -Headers $Headers
+            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://automation.eset.systems/v1/device_tasks" -Headers $Headers
         } catch {
             $_.Exception
         }
@@ -116,20 +116,21 @@ Function Get-EsetConnectDeviceGroups {
     }
 
     Try {
-        $DeviceGroups = Invoke-RestMethod -Method Get -Uri "http://$BaseUri/v1/device_groups" -Headers $Headers
+        $DeviceGroups = Invoke-RestMethod -Method Get -Uri "http://device-management.eset.systems/v1/device_groups" -Headers $Headers
     } catch {
         $_.Exception
     }
     Return $DeviceGroups.device_groups
 }
 
-function SwitchToBool([string]$Value) {
+Function SwitchToBool([string]$Value) {
 #there is probably a better way to do this..
     switch ($value.ToLower()) {
         "true" { return 1}
         "false" { return 0}
     }
 }
+
 Function Set-EsetConnectSyslogConfiguration {
     param(
         [Parameter(Mandatory=$True)][ValidateSet("json", "leef", "cef")]$LogType,
@@ -206,17 +207,18 @@ Function Invoke-EsetConnectRequest {
     Param(
         [ValidateSet("get", "post", "delete", "put")]$Method,
         [string]$Endpoint,
-        [string]$Body
+        [string]$Body,
+        [string]$BaseUri
     )
 
     $Headers = @{
         "Content-Type" = "application/json"
         "Accept" = "application/json"
-        "Authorization" = "bearer $AccessToken"
+        "Authorization" = "Bearer $AccessToken"
     }
 
     try {
-        Invoke-RestMethod -Method $Method -Uri "https://$BaseUri/$Endpoint" -Headers $Headers -Body $Body
+        Invoke-RestMethod -Method $Method -Uri "https://$BaseUri/$Endpoint" -Headers $Headers -Body $Body 
     } catch {
         $_.Exception
     }
