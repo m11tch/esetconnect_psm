@@ -181,7 +181,7 @@ Function Set-EsetConnectSyslogConfiguration {
     } | ConvertTo-Json
 
     Try {
-        $SetSyslogSettingsResponse = Invoke-RestMethod -Method post -Uri "https://$BaseUri/v1/configuration:setSyslogConfiguration" -Headers $Headers -Body $Data
+        $SetSyslogSettingsResponse = Invoke-RestMethod -Method post -Uri "https://esetconnect.eset.systems/v1/configuration:setSyslogConfiguration" -Headers $Headers -Body $Data
     } catch {
         $_.Exception
     }
@@ -196,7 +196,7 @@ Function Get-EsetConnectSyslogConfiguration {
     }
 
     Try {
-        $GetSyslogSettingsResponse = Invoke-RestMethod -Method post -Uri "https://$BaseUri/v1/configuration:getSyslogConfiguration" -Headers $Headers
+        $GetSyslogSettingsResponse = Invoke-RestMethod -Method post -Uri "https://esetconnect.eset.systems/v1/configuration:getSyslogConfiguration" -Headers $Headers
     } catch {
         $_.Exception
     }
