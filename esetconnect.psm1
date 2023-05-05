@@ -87,13 +87,13 @@ Function Get-EsetConnectDeviceTasks {
     
     if ($TaskUuid) { 
         Try {
-            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://automation.eset.systems/v1/device_tasks/$TaskUuid" -Headers $Headers
+            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "https://automation.eset.systems/v1/device_tasks/$TaskUuid" -Headers $Headers
         } catch {
             $_.Exception
         }
     } else {
         Try {
-            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "http://automation.eset.systems/v1/device_tasks" -Headers $Headers
+            $DeviceTasks = Invoke-RestMethod -Method Get -Uri "https://automation.eset.systems/v1/device_tasks" -Headers $Headers
         } catch {
             $_.Exception
         }
@@ -116,11 +116,11 @@ Function Get-EsetConnectDeviceGroups {
     }
 
     Try {
-        $DeviceGroups = Invoke-RestMethod -Method Get -Uri "http://device-management.eset.systems/v1/device_groups" -Headers $Headers
+        $DeviceGroups = Invoke-RestMethod -Method Get -Uri "https://device-management.eset.systems/v1/device_groups" -Headers $Headers
     } catch {
         $_.Exception
     }
-    Return $DeviceGroups.device_groups
+    Return $DeviceGroups.deviceGroups
 }
 
 Function SwitchToBool([string]$Value) {
