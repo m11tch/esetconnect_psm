@@ -3,7 +3,7 @@
 **usage:**
 ```powershell
 Import-Module ./esetconnect.psm1 -Force
-Invoke-EsetConnectAuthentication -Username "name@domain.com" -Password "passwordhere" -BaseUri "automation-test.eset.systems"
+Invoke-EsetConnectAuthentication -Username "name@domain.com" -Password "passwordhere" -BaseUri "automation.eset.systems"
 #Get Current Syslog Config
 Get-EsetConnectSyslogConfiguration
 #Set Syslog Config
