@@ -23,14 +23,14 @@ See example folder
 - [x] Authentication
 - [x] Asset Management
 - [x] Device Management
-- [] Application Management
-- [] Automation
-- [] Incident Management
-- [] Installer Management
-- [] Mobile Device Management
-- [] Network Access Protection
-- [] Policy Management
-- [] Quarantine Management
-- [] Web Access Protection
+- [ ] Application Management
+- [ ] Automation
+- [ ] Incident Management
+- [ ] Installer Management
+- [ ] Mobile Device Management
+- [ ] Network Access Protection
+- [ ] Policy Management
+- [ ] Quarantine Management
+- [ ] Web Access Protection
 
 See: https://help.eset.com/eset_connect/en-US/swagger_api.html for full overview
