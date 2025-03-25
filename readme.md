@@ -26,7 +26,7 @@ See example folder
 - [ ] Application Management
 - [ ] Automation
 - [ ] Incident Management
-- [ ] Installer Management
+- [x] Installer Management
 - [ ] Mobile Device Management
 - [ ] Network Access Protection
 - [ ] Policy Management
